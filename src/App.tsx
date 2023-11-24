@@ -12,11 +12,14 @@ function App() {
     setGreetMsg(await invoke("greet", { name }));
   }
 
+  async function screenShot() {
+    setGreetMsg(await invoke("take_screenshot"));
+  }
+
   return (
     <div className="container">
-      <h1>Welcome to Tauri!</h1>
 
-      <div className="row">
+<div className="row">
         <a href="https://vitejs.dev" target="_blank">
           <img src="/vite.svg" className="logo vite" alt="Vite logo" />
         </a>
@@ -27,8 +30,6 @@ function App() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
 
       <form
         className="row"
@@ -46,6 +47,8 @@ function App() {
       </form>
 
       <p>{greetMsg}</p>
+
+      <button onClick={() => { screenShot() }}>ScreenShot</button>
     </div>
   );
 }
