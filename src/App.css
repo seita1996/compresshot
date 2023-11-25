@@ -1,7 +1,11 @@
-.logo.vite:hover {
-  filter: drop-shadow(0 0 2em #747bff);
+.preview {
+  height: 24em;
+  padding: 1.5em;
+  cursor: pointer;
+  will-change: filter;
+  transition: 0.75s;
 }
 
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafb);
+.preview:hover {
+  filter: drop-shadow(0 0 2em #24c8db);
 }

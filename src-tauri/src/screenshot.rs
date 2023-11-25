@@ -1,7 +1,7 @@
 use screenshots::Screen;
-use std::time::Instant;
+use std::{time::Instant, path::PathBuf};
 
-pub fn capture() {
+pub fn capture() -> String {
     let start = Instant::now();
     let screens = Screen::all().unwrap();
 
@@ -22,6 +22,15 @@ pub fn capture() {
     println!("capturer {screen:?}");
 
     let image = screen.capture_area(300, 300, 300, 300).unwrap();
-    image.save("target/capture_display_with_point.png").unwrap();
-    println!("run time: {:?}", start.elapsed());
+    let base_path = tauri::api::path::download_dir().unwrap_or_else(|| PathBuf::new());
+    let path = base_path.join("capture_display_with_point.png");
+
+    match path.to_str() {
+        None => panic!("new path is not a valid UTF-8 sequence"),
+        Some(s) => {
+            image.save(s).unwrap();
+            println!("run time: {:?}", start.elapsed());
+            return format!("{}", s)
+        },
+    };
 }

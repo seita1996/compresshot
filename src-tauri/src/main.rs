@@ -12,13 +12,8 @@ fn greet(name: &str) -> String {
 #[tauri::command]
 async fn take_screenshot() -> String {
     // capture screenshot
-    std::panic::catch_unwind(|| {
-        screenshot::capture();
-    })
-    .unwrap_or_else(|_| {
-        format!("Error");
-    });
-    format!("Capture")
+    let path = screenshot::capture();
+    format!("{}", path)
 }
 
 fn main() {
