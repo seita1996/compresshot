@@ -1,5 +1,6 @@
 use screenshots::Screen;
 use std::{time::Instant, path::PathBuf};
+use std::time::{SystemTime, UNIX_EPOCH};
 
 pub fn capture() -> String {
     let start = Instant::now();
@@ -23,7 +24,7 @@ pub fn capture() -> String {
 
     let image = screen.capture_area(300, 300, 300, 300).unwrap();
     let base_path = tauri::api::path::download_dir().unwrap_or_else(|| PathBuf::new());
-    let path = base_path.join("capture_display_with_point.png");
+    let path = base_path.join(format!("capture_display_with_point_{}.png", SystemTime::now().duration_since(UNIX_EPOCH).expect("Time went backwards").as_secs()));
 
     match path.to_str() {
         None => panic!("new path is not a valid UTF-8 sequence"),
