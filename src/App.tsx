@@ -5,15 +5,8 @@ import "./App.css";
 import { copyFile } from "@tauri-apps/api/fs";
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
   const [previewImgPath, setPreviewImgPath] = useState("/tauri.svg");
   const [baseImgPath, setBaseImgPath] = useState("");
-
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-    setGreetMsg(await invoke("greet", { name }));
-  }
 
   async function screenShot() {
     const localImgPath: string = await invoke("take_screenshot");
@@ -43,23 +36,6 @@ function App() {
           <img src={previewImgPath} className="preview" alt="preview" />
         </div>
       </div>
-
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
-      </form>
-
-      <p>{greetMsg}</p>
 
       <button onClick={() => { screenShot() }}>ScreenShot</button>
     </div>
