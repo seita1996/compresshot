@@ -10,6 +10,7 @@ import { Rect } from "./types";
 function App() {
   const [previewImgPath, setPreviewImgPath] = useState("/tauri.svg");
   const [baseImgPath, setBaseImgPath] = useState("");
+  const [isFullImgPrev, setIsFullImgPrev] = useState(false);
 
   useEffect(() => {
     let unlisten: any;
@@ -61,13 +62,18 @@ function App() {
     setBaseImgPath(localFullImgPath);
     const fullscreenimg_path = convertFileSrc(localFullImgPath);
     setPreviewImgPath(fullscreenimg_path);
-    await appWindow.show();
-    await appWindow.setFullscreen(true);
-    await appWindow.setDecorations(false);
-    await appWindow.setCursorIcon('crosshair');
+    setIsFullImgPrev(true);
+    appWindow.show();
+    appWindow.setFullscreen(true);
+    appWindow.setDecorations(false);
+    appWindow.setAlwaysOnTop(true);
+    appWindow.setResizable(false);
     const rect = await getRect();
     await appWindow.setFullscreen(false);
     await appWindow.setDecorations(true);
+    await appWindow.setAlwaysOnTop(false);
+    await appWindow.setResizable(true);
+    setIsFullImgPrev(false);
     const localImgPath: string = await invoke("take_screenshot_rect", { x: rect.x, y: rect.y, width: rect.width, height: rect.height });
     setBaseImgPath(localImgPath);
     const path = convertFileSrc(localImgPath);
@@ -75,6 +81,10 @@ function App() {
   }
 
   async function openDialog() {
+    if (isFullImgPrev) {
+      return;
+    }
+
     let filePath = await save({
       filters: [{
         name: 'Image',
@@ -92,11 +102,15 @@ function App() {
 
       <div className="row">
         <div onClick={openDialog}>
-          <img src={previewImgPath} className="preview" alt="preview" />
+          <img
+            src={previewImgPath}
+            className={isFullImgPrev ? "preview-fullscreen" : "preview"}
+            alt="preview"
+          />
         </div>
       </div>
 
-      <button onClick={() => { screenShot() }}>ScreenShot</button>
+      {!isFullImgPrev && <button onClick={() => { screenShot() }}>ScreenShot</button>}
     </div>
   );
 }
