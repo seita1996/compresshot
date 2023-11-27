@@ -36,6 +36,22 @@
       "shell": {
         "all": false,
         "open": true
+      },
+      "window": {
+        "all": false,
+        "close": true,
+        "hide": true,
+        "maximize": true,
+        "minimize": true,
+        "setCursorGrab": true,
+        "setCursorIcon": true,
+        "setCursorPosition": true,
+        "setCursorVisible": true,
+        "setDecorations": true,
+        "setFullscreen": true,
+        "setIcon": true,
+        "show": true,
+        "startDragging": true
       }
     },
     "bundle": {
@@ -58,6 +74,7 @@
         "fullscreen": false,
         "resizable": true,
         "title": "compresshot",
+        "label": "compresshot",
         "width": 800,
         "height": 600
       }

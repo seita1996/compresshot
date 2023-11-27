@@ -6,9 +6,17 @@ use tauri::{CustomMenuItem, Menu, MenuItem, Submenu, AboutMetadata};
 pub mod screenshot;
 
 #[tauri::command]
-async fn take_screenshot() -> String {
+async fn take_screenshot_full() -> String {
     // capture screenshot
-    let path = screenshot::capture();
+    let path = screenshot::full_capture();
+    format!("{}", path)
+}
+
+#[tauri::command]
+async fn take_screenshot_rect(x: i32, y: i32, width: u32, height: u32) -> String {
+    // capture screenshot
+    println!("{} {} {} {}", x, y, width, height);
+    let path = screenshot::capture(x, y, width, height);
     format!("{}", path)
 }
 
@@ -55,7 +63,7 @@ fn main() {
             }
             _ => {}
         })
-        .invoke_handler(tauri::generate_handler![take_screenshot])
+        .invoke_handler(tauri::generate_handler![take_screenshot_full, take_screenshot_rect])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
