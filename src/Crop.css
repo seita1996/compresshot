@@ -1,5 +1,8 @@
+.cursor-crosshair {
+  cursor: crosshair;
+}
+
 .preview-fullscreen {
   width: 100%;
   height: 100%;
-  cursor: crosshair;
 }

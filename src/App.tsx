@@ -30,33 +30,21 @@ function App() {
     }
   }, [])
 
-  async function getRect (): Promise<Rect> {
-    return new Promise((resolve) => {
-      let startX :number, startY :number;
-      let endX, endY;
-  
-      const onMouseDown = (e: { clientX: number; clientY: number; }) => {
-        startX = e.clientX;
-        startY = e.clientY;
-        window.removeEventListener('mousedown', onMouseDown);
-        window.addEventListener('mouseup', onMouseUp);
-      };
-  
-      const onMouseUp = (e: { clientX: number; clientY: number; }) => {
-        endX = e.clientX;
-        endY = e.clientY;
-        window.removeEventListener('mouseup', onMouseUp);
-        resolve({
-          x: Math.min(startX, endX),
-          y: Math.min(startY, endY),
-          width: Math.abs(endX - startX),
-          height: Math.abs(endY - startY)
-        });
-      };
-  
-      window.addEventListener('mousedown', onMouseDown);
-    });
-  }
+  const handleRectChange = (newRect: Rect) => {
+    setRect(newRect);
+  };
+
+  const handleDragEnd = async () => {
+    await appWindow.setFullscreen(false);
+    await appWindow.setDecorations(true);
+    await appWindow.setAlwaysOnTop(false);
+    await appWindow.setResizable(true);
+    setIsFullImgPrev(false);
+    const localImgPath: string = await invoke("take_screenshot_rect", { x: rect.x, y: rect.y, width: rect.width, height: rect.height });
+    setBaseImgPath(localImgPath);
+    const path = convertFileSrc(localImgPath);
+    setPreviewImgPath(path);
+  };
 
   async function screenShot() {
     await appWindow.hide();
@@ -70,16 +58,6 @@ function App() {
     appWindow.setDecorations(false);
     appWindow.setAlwaysOnTop(true);
     appWindow.setResizable(false);
-    setRect(await getRect());
-    await appWindow.setFullscreen(false);
-    await appWindow.setDecorations(true);
-    await appWindow.setAlwaysOnTop(false);
-    await appWindow.setResizable(true);
-    setIsFullImgPrev(false);
-    const localImgPath: string = await invoke("take_screenshot_rect", { x: rect.x, y: rect.y, width: rect.width, height: rect.height });
-    setBaseImgPath(localImgPath);
-    const path = convertFileSrc(localImgPath);
-    setPreviewImgPath(path);
   }
 
   async function openDialog() {
@@ -112,11 +90,9 @@ function App() {
             alt="preview"
           />}
           {isFullImgPrev && <Crop
-            x={rect.x}
-            y={rect.y}
-            width={rect.width}
-            height={rect.height}
             img={previewImgPath}
+            onRectChange={handleRectChange}
+            onDragEnd={handleDragEnd}
           />}
         </div>
       </div>
