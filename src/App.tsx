@@ -46,8 +46,11 @@ function App() {
     setPreviewImgPath(path);
   };
 
+  const sleep = (msec: number | undefined) => new Promise(resolve => setTimeout(resolve, msec));
+
   async function screenShot() {
     await appWindow.hide();
+    await sleep(200);
     const localFullImgPath: string = await invoke("take_screenshot_full");
     setBaseImgPath(localFullImgPath);
     const fullscreenimg_path = convertFileSrc(localFullImgPath);
